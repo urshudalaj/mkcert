@@ -27,6 +27,11 @@ Using certificates from real certificate authorities (CAs) for development can b
 
 mkcert automatically creates and installs a local CA in the system root store, and generates locally-trusted certificates. mkcert does not automatically configure servers to use the certificates, though, that's up to you.
 
+> **Personal note**: I use this primarily for local Node.js and Go development. The one-liner that works best for me is:
+> ```
+> mkcert localhost 127.0.0.1 ::1 && mkcert -install
+> ```
+
 ## Installation
 
 > **Warning**: the `rootCA-key.pem` file that mkcert automatically generates gives complete power to intercept secure requests from your machine. Do not share it.
@@ -104,8 +109,4 @@ scoop bucket add extras
 scoop install mkcert
 ```
 
-or build from source (requires Go 1.10+), or use [the pre-built binaries](https://github.com/FiloSottile/mkcert/releases).
-
-## Personal Notes
-
-> I use this primarily for local Node.js and Go development. A quick tip: after running `mkcert -install`, you can reference the CA root path via `mkcert -CAROOT` — useful for configuring tools like Node's `NODE_EXTRA_CA_CERTS` environment variable.
+or build from source (requires Go 1.10+), or use [the pre-built binaries](https://github.com/FiloSottile/mkcert/releas
