@@ -108,7 +108,4 @@ or build from source (requires Go 1.10+), or use [the pre-built binaries](https:
 
 ## Personal Notes
 
-> I use this primarily for local Docker-based development. A handy one-liner to generate certs for a typical local setup:
-> ```
-> mkcert localhost 127.0.0.1 ::1 myapp.local
-> ```
+> I use this primarily for local Node.js and Go development. A quick tip: after running `mkcert -install`, you can reference the CA root path via `mkcert -CAROOT` — useful for configuring tools like Node's `NODE_EXTRA_CA_CERTS` environment variable.
