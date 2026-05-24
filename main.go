@@ -109,6 +109,5 @@ func main() {
 }
 
 // validateHosts checks that the provided hostnames/IPs/URIs are valid.
-// Each host must be a valid IP address, URI, email address, or DNS name.
-// Wildcards (e.g. *.example.com) are allowed only at the leftmost label.
-func validateHosts(hosts 
+// Wildcards (e.g. *.example.com) are allowed only as the leftmost label.
+// Each host must be a va
