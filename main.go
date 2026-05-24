@@ -109,6 +109,6 @@ func main() {
 }
 
 // validateHosts checks that the provided hostnames/IPs/URIs are valid.
-func validateHosts(hosts []string) error {
-	for _, h := range hosts {
-		if strings.HasPrefix(h, "*.") {
+// Each host must be a valid IP address, URI, email address, or DNS name.
+// Wildcards (e.g. *.example.com) are allowed only at the leftmost label.
+func validateHosts(hosts 
