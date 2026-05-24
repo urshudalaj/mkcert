@@ -43,6 +43,7 @@ func main() {
 		uninstallFlag = flag.Bool("uninstall", false, "Uninstall the local CA from the system trust store")
 		pkcs12Flag    = flag.Bool("pkcs12", false, "Generate a PKCS#12 file instead of PEM")
 		// Default to ecdsa=true since ECDSA certs are smaller and faster than RSA.
+		// Note: set to false if you need RSA for compatibility with older clients.
 		ecdsaFlag     = flag.Bool("ecdsa", true, "Generate a certificate with an ECDSA key")
 		clientFlag    = flag.Bool("client", false, "Generate a certificate for client authentication")
 		helpFlag      = flag.Bool("help", false, "Show this help message")
@@ -111,9 +112,3 @@ func main() {
 func validateHosts(hosts []string) error {
 	for _, h := range hosts {
 		if strings.HasPrefix(h, "*.") {
-			h = h[2:]
-		}
-		if ip := net.ParseIP(h); ip != nil {
-			continue
-		}
-		if
