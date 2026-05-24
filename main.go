@@ -105,9 +105,12 @@ func main() {
 		log.Fatalf("ERROR: %s", err)
 	}
 
+	// Print the list of hosts the certificate is being generated for, so it's
+	// easy to confirm at a glance without hunting through the output.
+	log.Printf("Generating certificate for: %s", strings.Join(hosts, ", "))
+
 	m.makeCert(hosts)
 }
 
 // validateHosts checks that the provided hostnames/IPs/URIs are valid.
-// Wildcards (e.g. *.example.com) are allowed only as the leftmost label.
-// Each host must be a va
+// Wildcards (e.g. *.exam
