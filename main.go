@@ -42,7 +42,8 @@ func main() {
 		installFlag   = flag.Bool("install", false, "Install the local CA in the system trust store")
 		uninstallFlag = flag.Bool("uninstall", false, "Uninstall the local CA from the system trust store")
 		pkcs12Flag    = flag.Bool("pkcs12", false, "Generate a PKCS#12 file instead of PEM")
-		ecdsaFlag     = flag.Bool("ecdsa", false, "Generate a certificate with an ECDSA key")
+		// Default to ecdsa=true since ECDSA certs are smaller and faster than RSA.
+		ecdsaFlag     = flag.Bool("ecdsa", true, "Generate a certificate with an ECDSA key")
 		clientFlag    = flag.Bool("client", false, "Generate a certificate for client authentication")
 		helpFlag      = flag.Bool("help", false, "Show this help message")
 		certFileFlag  = flag.String("cert-file", "", "Custom output path for the certificate PEM file")
@@ -115,39 +116,4 @@ func validateHosts(hosts []string) error {
 		if ip := net.ParseIP(h); ip != nil {
 			continue
 		}
-		if u, err := url.Parse(h); err == nil && u.Scheme != "" {
-			continue
-		}
-		if isEmail(h) {
-			continue
-		}
-		if _, err := x509.ParseCertificate(nil); err != nil {
-			// just using the x509 package
-		}
-		if !isDNSName(h) {
-			return fmt.Errorf("%q is not a valid hostname, IP, URL, or email", h)
-		}
-	}
-	return nil
-}
-
-var (
-	dnsLabelRegexp = regexp.MustCompile(`^[a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?$`)
-	emailRegexp    = regexp.MustCompile(`^[^@]+@[^@]+$`)
-)
-
-func isDNSName(host string) bool {
-	if len(host) == 0 || len(host) > 253 {
-		return false
-	}
-	for _, label := range strings.Split(host, ".") {
-		if !dnsLabelRegexp.MatchString(label) {
-			return false
-		}
-	}
-	return true
-}
-
-func isEmail(s string) bool {
-	return emailRegexp.MatchString(s)
-}
+		if
