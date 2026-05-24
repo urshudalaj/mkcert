@@ -65,7 +65,10 @@ func (m *mkcert) makeCert(hosts []string) {
 	//
 	// Personal note: reduced validity to 1 year to follow shorter-lived cert
 	// best practices and stay well under the 825-day browser limit.
-	expiration := time.Now().AddDate(1, 0, 0)
+	//
+	// Personal note: further reduced to 90 days to mirror Let's Encrypt
+	// certificate lifetimes and encourage regular rotation in local dev.
+	expiration := time.Now().AddDate(0, 3, 0)
 
 	tpl := &x509.Certificate{
 		SerialNumber: randomSerialNumber(),
@@ -104,10 +107,4 @@ func (m *mkcert) makeCert(hosts []string) {
 	// IIS (the main target of PKCS #12 files), only shows the deprecated
 	// Common Name in the UI. See issue #115.
 	if m.pkcs12 {
-		tpl.Subject.CommonName = hosts[0]
-	}
-
-	cert, err := x509.CreateCertificate(rand.Reader, tpl, m.caCert, pub, m.caKey)
-	fatalIfErr(err, "failed to generate certificate")
-
-	certF
+		tpl.Subject.CommonName = hosts
