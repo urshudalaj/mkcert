@@ -62,7 +62,10 @@ func (m *mkcert) makeCert(hosts []string) {
 	//
 	// Personal note: bumped NotBefore back by 1 hour to avoid clock-skew
 	// issues when testing across VMs with slightly out-of-sync clocks.
-	expiration := time.Now().AddDate(2, 3, 0)
+	//
+	// Personal note: reduced validity to 1 year to follow shorter-lived cert
+	// best practices and stay well under the 825-day browser limit.
+	expiration := time.Now().AddDate(1, 0, 0)
 
 	tpl := &x509.Certificate{
 		SerialNumber: randomSerialNumber(),
@@ -107,8 +110,4 @@ func (m *mkcert) makeCert(hosts []string) {
 	cert, err := x509.CreateCertificate(rand.Reader, tpl, m.caCert, pub, m.caKey)
 	fatalIfErr(err, "failed to generate certificate")
 
-	certFile, keyFile, p12File := m.fileNames(hosts)
-
-	if !m.pkcs12 {
-		certPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cert})
-		privDER, err := x509.Ma
+	certF
