@@ -102,11 +102,11 @@ On Windows, use [Chocolatey](https://chocolatey.org)
 choco install mkcert
 ```
 
-or use Scoop
+or [Scoop](https://scoop.sh/)
 
 ```
 scoop bucket add extras
 scoop install mkcert
 ```
 
-or build from source (requires Go 1.10+), or use [the pre-built binaries](https://github.com/FiloSottile/mkcert/releas
+> **Personal note**: On Windows I prefer Scoop over Chocolatey as it doesn't require admin privileges.
