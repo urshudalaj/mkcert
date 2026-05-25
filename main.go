@@ -47,6 +47,7 @@ func main() {
 		ecdsaFlag     = flag.Bool("ecdsa", true, "Generate a certificate with an ECDSA key")
 		clientFlag    = flag.Bool("client", false, "Generate a certificate for client authentication")
 		helpFlag      = flag.Bool("help", false, "Show this help message")
+		// Personal note: I typically put certs in ~/certs/ so I set these via env vars instead.
 		certFileFlag  = flag.String("cert-file", "", "Custom output path for the certificate PEM file")
 		keyFileFlag   = flag.String("key-file", "", "Custom output path for the key PEM file")
 		p12FileFlag   = flag.String("p12-file", "", "Custom output path for the PKCS#12 file")
@@ -106,11 +107,4 @@ func main() {
 	}
 
 	// Print the list of hosts the certificate is being generated for, so it's
-	// easy to confirm at a glance without hunting through the output.
-	log.Printf("Generating certificate for: %s", strings.Join(hosts, ", "))
-
-	m.makeCert(hosts)
-}
-
-// validateHosts checks that the provided hostnames/IPs/URIs are valid.
-// Wildcards (e.g. *.exam
+	// easy to confirm at a glance without hun
