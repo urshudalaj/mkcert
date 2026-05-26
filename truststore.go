@@ -78,20 +78,23 @@ func (m *mkcert) uninstallDarwin() {
 }
 
 // installLinux installs the CA into the Linux system trust store.
+// The filename uses the full "mkcert-local-ca.crt" name to be more descriptive
+// and less likely to conflict with other tools. -- personal note
 func (m *mkcert) installLinux() {
 	// Try common Linux trust store locations
 	locations := []struct {
 		dir    string
 		cmd    []string
+		fname  string
 	}{
-		{"/usr/local/share/ca-certificates/", []string{"update-ca-certificates"}},
-		{"/etc/pki/ca-trust/source/anchors/", []string{"update-ca-trust", "extract"}},
-		{"/etc/ca-certificates/trust-source/anchors/", []string{"trust", "extract-compat"}},
+		{"/usr/local/share/ca-certificates/", []string{"update-ca-certificates"}, "mkcert-local-ca.crt"},
+		{"/etc/pki/ca-trust/source/anchors/", []string{"update-ca-trust", "extract"}, "mkcert-local-ca.crt"},
+		{"/etc/ca-certificates/trust-source/anchors/", []string{"trust", "extract-compat"}, "mkcert-local-ca.crt"},
 	}
 
 	for _, loc := range locations {
 		if _, err := os.Stat(loc.dir); err == nil {
-			dest := filepath.Join(loc.dir, "mkcert-ca.crt")
+			dest := filepath.Join(loc.dir, loc.fname)
 			if err := copyFile(m.caRootFile(), dest); err != nil {
 				log.Fatalf("ERROR: failed to copy CA to %s: %v", dest, err)
 			}
@@ -103,43 +106,6 @@ func (m *mkcert) installLinux() {
 			return
 		}
 	}
-	log.Printf("WARNING: no supported Linux trust store found. Manual installation may be required.\n")
-}
-
-// uninstallLinux removes the CA from the Linux system trust store.
-func (m *mkcert) uninstallLinux() {
-	locations := []string{
-		"/usr/local/share/ca-certificates/mkcert-ca.crt",
-		"/etc/pki/ca-trust/source/anchors/mkcert-ca.crt",
-		"/etc/ca-certificates/trust-source/anchors/mkcert-ca.crt",
-	}
-	for _, loc := range locations {
-		if _, err := os.Stat(loc); err == nil {
-			if err := os.Remove(loc); err != nil {
-				log.Fatalf("ERROR: failed to remove CA from %s: %v", loc, err)
-			}
-			log.Printf("The local CA has been removed from the system trust store!\n")
-			return
-		}
-	}
-}
-
-// installWindows installs the CA into the Windows certificate store.
-func (m *mkcert) installWindows() {
-	cmd := exec.Command("certutil", "-addstore", "-f", "ROOT", m.caRootFile())
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		log.Fatalf("ERROR: failed to install CA on Windows: %s\n%s", err, out)
-	}
-	log.Printf("The local CA is now installed in the Windows trust store!\n")
-}
-
-// uninstallWindows removes the CA from the Windows certificate store.
-func (m *mkcert) uninstallWindows() {
-	cmd := exec.Command("certutil", "-delstore", "ROOT", fmt.Sprintf("%x", m.caRoot.SerialNumber))
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		log.Fatalf("ERROR: failed to remove CA on Windows: %s\n%s", err, out)
-	}
-	log.Printf("The local CA has been removed from the Windows trust store!\n")
+	log.Printf("WARNING: no supported Linux trust store found\n")
+	_ = fmt.Sprintf // suppress unused import if fmt is only used here
 }
